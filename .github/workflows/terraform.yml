@@ -30,7 +30,8 @@ jobs:
 
     # Generate provider.tf file dynamically during pipeline run, get necessary items from pipeline variables
     - name: Create Provider File
-      run: cat <<EOF > provider.tf
+      run: |
+        cat <<EOF > provider.tf
             terraform {
             required_providers {
                 aws = {
@@ -52,7 +53,9 @@ jobs:
             secret_key = "${AWS_SECRET_ACCESS_KEY}"
             
             }
-           EOT       
+        EOF
+        
+        cat provider.tf
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
