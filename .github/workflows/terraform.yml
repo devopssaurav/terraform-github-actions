@@ -30,6 +30,9 @@ jobs:
 
     # Generate provider.tf file dynamically during pipeline run, get necessary items from pipeline variables
     - name: Create Provider File
+      env:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         cat <<EOF > provider.tf
             terraform {
@@ -49,7 +52,8 @@ jobs:
 
             provider "aws" {
             region     =  "u-west-2"
-            
+            access_key = $aws_access_key
+            secret_key = $aws_secret_key
             
             }
         EOF
@@ -58,7 +62,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID}}"  -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+      run: terraform init
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
