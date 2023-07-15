@@ -40,17 +40,17 @@ jobs:
                 }
             }
             backend "s3" {
-                bucket = "${TERRAFORM_S3_BACKEND}"
-                key    = "${TERRAFORM_S3_BACKEND_KEY}"
-                region = "${AWS_REGION}"
-                dynamodb_table  = "${DYANAMO_STATE_LOCK_TABLE}"
+                bucket = ${{ secrets.TERRAFORM_S3_BACKEND }}
+                key    = ${{ secrets.TERRAFORM_S3_BACKEND_KEY }}
+                region = ${{ secrets.AWS_REGION }}
+                dynamodb_table  = ${{ secrets.DYANAMO_STATE_LOCK_TABLE }}
             }
             }
 
             provider "aws" {
-            region     = "${AWS_REGION}"
-            access_key = "${AWS_ACCESS_KEY_ID}"
-            secret_key = "${AWS_SECRET_ACCESS_KEY}"
+            region     =  ${{ secrets.AWS_REGION }}
+            access_key = ${{ secrets.AWS_ACCESS_KEY_ID }} 
+            secret_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             
             }
         EOF
