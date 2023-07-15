@@ -40,10 +40,10 @@ jobs:
                 }
             }
             backend "s3" {
-                bucket = ${{ secrets.TERRAFORM_S3_BACKEND }}
-                key    = ${{ secrets.TERRAFORM_S3_BACKEND_KEY }}
-                region = ${{ secrets.AWS_REGION }}
-                dynamodb_table  = ${{ secrets.DYANAMO_STATE_LOCK_TABLE }}
+                bucket = "saurav-terraform-backend"
+                key    = "terraform/remote/s3/terraform.tfstate"
+                region = "us-west-2"
+                dynamodb_table  = "terraform-state-lock"
             }
             }
 
