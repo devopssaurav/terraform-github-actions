@@ -112,5 +112,7 @@ jobs:
       
       - name: Setup Terraform  
         uses: hashicorp/setup-terraform@v1
+      - name: terrform init
+        run: terraform init    
       - name: Terraform Apply  
         run: terraform apply -auto-approve -input=false
