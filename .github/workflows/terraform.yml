@@ -73,9 +73,9 @@ jobs:
     - name: Terraform Plan
       run: terraform plan -input=false
   
-  terraform-deploy:
+  Approve:
     needs: terraform-plan
-    name: Approve and deploy
+    name: Approve the deployment
     runs-on: ubuntu-latest
     environment: production
 
@@ -94,10 +94,24 @@ jobs:
         issue-body: "Please approve or deny the deployment"
         exclude-workflow-initiator-as-approver: false
         additional-approved-words: ''
-        additional-denied-words: ''    
-
+        additional-denied-words: ''   
+   
+  terraform-apply:       
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false
+      needs: [terraform-plan, Approve]
+      runs-on: ubuntu-latest
+      environment: production
+      name: Terraform Apply
+
+      defaults:
+        run:
+          shell: bash       
+
+      steps:
+      
+      - name: Setup Terraform  
+        uses: hashicorp/setup-terraform@v1
+      - name: Terraform Apply  
+        if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
