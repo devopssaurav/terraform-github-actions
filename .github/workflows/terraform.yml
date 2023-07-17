@@ -109,7 +109,45 @@ jobs:
           shell: bash       
 
       steps:
-      
+    # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Configure AWS Credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+          aws-secret-access-key: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'  
+          aws-region: 'us-west-2'
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      # Generate provider.tf file dynamically during pipeline run, get necessary items from pipeline variables
+      - name: Create Provider File
+        run: |
+          cat <<EOF > provider.tf
+              terraform {
+              required_providers {
+                  aws = {
+                  source = "hashicorp/aws"
+                  version = "5.7.0"
+                  }
+              }
+              backend "s3" {
+                  bucket = "saurav-terraform-backend"
+                  key    = "terraform/remote/s3/terraform.tfstate"
+                  region = "us-west-2"
+                  dynamodb_table  = "terraform-locks"
+              }
+              }
+
+              provider "aws" {
+                region = "us-west-2"
+              }
+          EOF
+          
+          cat provider.tf      
       - name: Setup Terraform  
         uses: hashicorp/setup-terraform@v1
       - name: terrform init
