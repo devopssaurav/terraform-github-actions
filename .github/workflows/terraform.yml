@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  terraform-plan:
+    name: 'Terraform Init and Plan'
     runs-on: ubuntu-latest
     environment: production
 
@@ -71,7 +71,17 @@ jobs:
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
-    
+  
+  terraform-deploy:
+    name: Approve and deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash     
+    steps:
     - name: Approval Gate
       uses: trstringer/manual-approval@v1
       with:
