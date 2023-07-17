@@ -113,5 +113,4 @@ jobs:
       - name: Setup Terraform  
         uses: hashicorp/setup-terraform@v1
       - name: Terraform Apply  
-        if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
